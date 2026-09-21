@@ -1063,7 +1063,7 @@ margin-right: 0; }
 <section id="programme" class="slide level2">
 <h2>Programme</h2>
 <ul>
-<li class="fragment">short intoructionary and admin window aka Where Can You Find Coffee</li>
+<li class="fragment">short introduction and organization window aka Where Can You Find The Coffee</li>
 <li class="fragment">R basics 101 review</li>
 <li class="fragment">so what type of data am I actually working with and why do I need to know?</li>
 <li class="fragment">ukládání dat do proměnných</li>
@@ -1074,6 +1074,27 @@ margin-right: 0; }
 <li class="fragment">funkce v R a jejich syntax</li>
 </ul>
 </section>
+<section id="organization" class="slide level2">
+<h2>Organization</h2>
+<ul>
+<li class="fragment"><p>four 45 minutes long blocks with breaks inbetween</p></li>
+<li class="fragment"><p>combination of code along, presentation and individual work</p></li>
+<li class="fragment"><p>focused on those who already know the basics of operating witR bash R (and RStudio)</p></li>
+</ul>
+</section>
+<section id="r-basics-recap---what-do-you-know" class="slide level2">
+<h2>R basics recap - what do you know?</h2>
+<p><strong>What does the symbol $ do?</strong></p>
+<p>$ selects values of a particular column from the dataset</p>
+<p>dataset$columnName</p>
+<p><strong>Which deliminator is used in R?</strong></p>
+<p>Decimal point; however, that does not mean that you cannot use datasets which use comma.</p>
+<p>Which function can we use to load datasets from .txt or .csv files into R?</p>
+<p><code>read.table()</code></p>
+<p>For txt: <code>read.delim()</code></p>
+<p>For CSV: <code>read.csv()</code></p>
+<p>What is a factor?</p>
+</section>
 <section id="types-of-data" class="slide level2">
 <h2>Types of data</h2>
 <p>why it is important to know the difference</p>
@@ -1083,8 +1104,8 @@ margin-right: 0; }
 </section>
 <section id="loading-the-data" class="slide level2">
 <h2>Loading the data</h2>
-<p>During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file newborns.txt.</p>
-<p>To be able to create visualizations based on the informations within, we first have to load it into our instance of R.</p>
+<p>During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file <a href="https://luc-hoskova.github.io/R-individualni_kurzy/Charleston-visualization/newborns.txt"><code>newborns.txt</code></a>.</p>
+<p>To be able to create visualizations based on the information within, we first have to <strong>load it into our instance of R</strong>.</p>
 <div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -1094,10 +1115,13 @@ margin-right: 0; }
 <p><strong>Always check your data!</strong></p>
 </div>
 <div class="callout-content">
-<p>Just loading the data is never enough; always check the data to make sure that each variable is the correct data type; for example, the categorical data are set as factors, not just character or numeric values.</p>
+<p>Just loading the data is never enough; always check the data to make sure that <strong>each variable is the correct data type</strong>; for example, the categorical data are set as factors, not just character or numeric values.</p>
 </div>
 </div>
 </div>
+</section>
+<section class="slide level2">
+
 <p>what function will we use? how will we do it?</p>
 <p>what types are the different variables? what function to use changing to factors - if its categories which use numbers for names it will take it as numeric and for example barlots will go haywire</p>
 <p>changing to factors</p>

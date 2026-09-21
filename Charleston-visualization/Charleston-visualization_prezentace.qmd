@@ -21,7 +21,7 @@ execute:
 ## Programme
 
 ::: incremental
-- short intoructionary and admin window aka Where Can You Find Coffee
+- short introduction and organization window aka Where Can You Find The Coffee
 - R basics 101 review
 - so what type of data am I actually working with and why do I need to know?
 - ukládání dat do proměnných
@@ -31,6 +31,38 @@ execute:
 - RProjekty, .RData
 - funkce v R a jejich syntax
 :::
+
+## Organization
+
+::: incremental
+- four 45 minutes long blocks with breaks inbetween
+
+- combination of code along, presentation and individual work
+
+- focused on those who already know the basics of operating witR bash R (and RStudio)
+:::
+
+## R basics recap - what do you know?
+
+**What does the symbol \$ do?**
+
+\$ selects values of a particular column from the dataset
+
+dataset\$columnName
+
+**Which deliminator is used in R?**
+
+Decimal point; however, that does not mean that you cannot use datasets which use comma.
+
+Which function can we use to load datasets from .txt or .csv files into R?
+
+`read.table()`
+
+For txt: `read.delim()`
+
+For CSV: `read.csv()`
+
+What is a factor?
 
 ## Types of data
 
@@ -48,22 +80,22 @@ is it possible to change those types? yes fo example dividing height into catego
 #| echo: false
 #| include: false
 
-data <- read.delim("newborns.txt")
-str(data)
-data$edu.M <- factor(data$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
-data$sex.C <- as.factor(data$sex.C)
-str(data)
+dataNewborns <- read.delim("newborns.txt")
+dataNewborns$edu.M <- factor(dataNewborns$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
+dataNewborns$sex.C <- as.factor(dataNewborns$sex.C)
 ```
 
-During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file newborns.txt.
+During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file [`newborns.txt`](https://luc-hoskova.github.io/R-individualni_kurzy/Charleston-visualization/newborns.txt).
 
-To be able to create visualizations based on the informations within, we first have to load it into our instance of R.
+To be able to create visualizations based on the information within, we first have to **load it into our instance of R**.
 
 ::: callout-important
 ## Always check your data!
 
-Just loading the data is never enough; always check the data to make sure that each variable is the correct data type; for example, the categorical data are set as factors, not just character or numeric values.
+Just loading the data is never enough; always check the data to make sure that **each variable is the correct data type**; for example, the categorical data are set as factors, not just character or numeric values.
 :::
+
+------------------------------------------------------------------------
 
 what function will we use? how will we do it?
 

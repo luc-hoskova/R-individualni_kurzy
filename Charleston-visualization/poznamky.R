@@ -1,5 +1,7 @@
-data <- read.delim("newborns.txt")
-str(data)
-data$edu.M <- factor(data$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
-data$sex.C <- as.factor(data$sex.C)
-str(data)
+#LOADING DATA NEWBORN.TXT
+dataNewborns <- read.delim("newborns.txt")
+str(dataNewborns) #checking data
+#factorizing categorical values
+dataNewborns$edu.M <- factor(dataNewborns$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
+dataNewborns$sex.C <- as.factor(dataNewborns$sex.C)
+str(dataNewborns)
