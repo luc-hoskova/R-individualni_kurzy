@@ -1,0 +1,5 @@
+data <- read.delim("newborns.txt")
+str(data)
+data$edu.M <- factor(data$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
+data$sex.C <- as.factor(data$sex.C)
+str(data)

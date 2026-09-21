@@ -33,50 +33,74 @@ execute:
 :::
 
 ## Types of data
+
 why it is important to know the difference
 
-qualitaitve data diskrétní
-- nominal data
-- ordinal data
+qualitaitve data diskrétní - nominal data - ordinal data
 
-quantitative data spojitá
-- interval data
-  - pokracuje to jak je treba, -25 stupnu je porad hodnota, nema to neco jako jasnou nulu
-  - nelze porovnavat - teplota v celsius nemuze byt napriklad dvakrat tak vetsi, protoze... dvakrat tak vetsi od ceho? 
-    - 40C neni 2x vetsi nez 20C, protoze nula neni zacatek od ktereho se to pocita
-- ratio
-  - jasna nula; nelze mit zapornou vysku nebo treba prijem, taky nelze jit do minusu se stupni kelvina
-  
+quantitative data spojitá - interval data - pokracuje to jak je treba, -25 stupnu je porad hodnota, nema to neco jako jasnou nulu - nelze porovnavat - teplota v celsius nemuze byt napriklad dvakrat tak vetsi, protoze... dvakrat tak vetsi od ceho? - 40C neni 2x vetsi nez 20C, protoze nula neni zacatek od ktereho se to pocita - ratio - jasna nula; nelze mit zapornou vysku nebo treba prijem, taky nelze jit do minusu se stupni kelvina
 
 is it possible to change those types? yes fo example dividing height into categories
 
 ## Loading the data
-load the newborns.txt file. what function will we use? how will we do it?
 
-what types are the different variables? what function to use
-changing to factors - if its categories which use numbers for names it will take it as numeric and for example barlots will go haywire
+```{r}
+#| echo: false
+#| include: false
+
+data <- read.delim("newborns.txt")
+str(data)
+data$edu.M <- factor(data$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
+data$sex.C <- as.factor(data$sex.C)
+str(data)
+```
+
+During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file newborns.txt.
+
+To be able to create visualizations based on the informations within, we first have to load it into our instance of R.
+
+::: callout-important
+## Always check your data!
+
+Just loading the data is never enough; always check the data to make sure that each variable is the correct data type; for example, the categorical data are set as factors, not just character or numeric values.
+:::
+
+what function will we use? how will we do it?
+
+what types are the different variables? what function to use changing to factors - if its categories which use numbers for names it will take it as numeric and for example barlots will go haywire
 
 changing to factors
 
 ## Example of base R
 
+načtení dat
+
 # why you should use ggplot2 instead
 
 ## Barplot
-for categorical data
-or rather - numeric values of the categories
-categories on x the numeric values on y
-it is possible to do how much is of each category like with histogram
-aka count
+
+for categorical data or rather - numeric values of the categories categories on x the numeric values on y it is possible to do how much is of each category like with histogram aka count
 
 https://lucie-hoskova.quarto.pub/r_pro_analyzu_vedeckych_dat/letni_skola.html#/barplot
 
+## point
+
+```{r}
+#| label: fig-airquality
+#| fig-cap: "Temperature and ozone level."
+#| warning: false
+
+library(ggplot2)
+
+ggplot(airquality, aes(Temp, Ozone)) + 
+  geom_point() + 
+  geom_smooth(method = "loess")
+```
+
 ## 3D graphs
+
 library(rgl)
 
-x <- rnorm(100)
-y <- rnorm(100)
-z <- rnorm(100)
+x \<- rnorm(100) y \<- rnorm(100) z \<- rnorm(100)
 
-plot3d(x, y, z, col = "blue", pch = 20, size = 2, xlab = "X", ylab = "Y", zlab = "Z")
-#v prezentaci se nezobrazi, musi byt spusten v RStudiu
+plot3d(x, y, z, col = "blue", pch = 20, size = 2, xlab = "X", ylab = "Y", zlab = "Z") #v prezentaci se nezobrazi, musi byt spusten v RStudiu
