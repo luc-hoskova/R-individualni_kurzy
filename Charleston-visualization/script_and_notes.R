@@ -215,63 +215,11 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width,
                  color = Species,
                  alpha = 0.4)) +
   geom_point(aes(size = Petal.Width)) + 
-  geom_density_2d(
-    color = "red",
-    linewidth = 0.5) + #add lines of density with adjustable color and size
+  geom_density_2d() + #add lines of density
   labs(title="Relationship Between Sepal Length and Sepal Width", 
        x = "Sepal lenght (cm)",
        y = "Sepal width (cm)", 
        shape = "Species",
        color = "Species",
        size = "Petal Width") +
-  theme_minimal()
-
-#ADD FITTED TREND LINE
-#curve that sumarizes the overall pattern of the data
-ggplot(data = trees) +
-  aes(x = Girth, y = Height) +
-  geom_point() +
-  geom_smooth( #add fitted trend line
-    method = "loess", #this dataset doesnt have a lot of values so we have to keep as much as possible
-    level = 0.95) + #confidence interval
-  labs(title="Relationship Between Tree Girth and Height", 
-       x = "Girth",
-       y = "Height") +
-  theme_minimal()
-
-##############################################################################################
-#BOXPLOT
-#############################################################################################
-#CREATING BOXPLOT
-ggplot(dataNewborns) +
-  aes(x = sex.C,
-      y = weight.C) +
-  geom_boxplot()
-
-#DIVIDING BY CATEGORIES, ADDING NOTCH AND CHANGING OUTLIERS
-ggplot(dataNewborns) +
-  aes(x = sex.C,
-      y = weight.C,
-      fill = sex.C) + # divide by categories
-  geom_boxplot(outlier.size = 2.5, #change size of outliers
-               outlier.shape = 21, #change the shape of outliers
-               notch = TRUE) + #add notch
-  labs(title = "Birth Weight by Sex", x = "Sex", y = "Birth Weight (g)",
-       fill = "Sex") +
-theme_minimal()
-
-#MAP VALUES ON BOXPLOT
-ggplot(dataNewborns) +
-  aes(x = sex.C,
-      y = weight.C,
-      fill = sex.C) +
-  geom_boxplot(outlier.size = 2.5,
-               outlier.shape = 21,
-               notch = TRUE) +
-  geom_jitter( #add values
-    position = position_jitter(0.2), #how far away from middle
-    colour = "darkgreen",
-    alpha = 0.2) + #how opaque
-  labs(title = "Birth Weight by Sex", x = "Sex", y = "Birth Weight (g)",
-       fill = "Sex") +
   theme_minimal()

@@ -1,6 +1,6 @@
 ---
-title: "Úvodní hodina"
-subtitle: "Zpracovávání výzkumných dat pomocí jazyka R"
+title: "R language - visualization"
+subtitle: "Lucie Hošková"
 title-slide-attributes:
   data-background-color: rgb(233, 84, 32)
 format:
@@ -8,7 +8,7 @@ format:
     self-contained: true
     theme: default
     scrollable: true
-    footer: "Charleston | [Lucie Hošková](https://orcid.org/0009-0001-9695-2342)"
+    footer: "[Lucie Hošková](https://orcid.org/0009-0001-9695-2342)"
 engine: knitr
 filters:
   - webr
@@ -24,55 +24,114 @@ execute:
 - short introduction and organization window aka Where Can You Find The Coffee
 - R basics 101 review
 - so what type of data am I actually working with and why do I need to know?
-- ukládání dat do proměnných
-- operátory
-- etiketa psaní kódu
-- working directory
-- RProjekty, .RData
-- funkce v R a jejich syntax
+- basic plot types
+- base R vs `ggplot2`
+- `ggplot2` layers shown on barplot, histogram and scatterplot
+- boxplot
+- heatmaps
+- maps
 :::
 
 ## Organization
 
 ::: incremental
-- four 45 minutes long blocks with breaks inbetween
+- four cca 45 minutes long blocks with breaks inbetween
+
+  - water and coffee available
 
 - combination of code along, presentation and individual work
 
-- focused on those who already know the basics of operating witR bash R (and RStudio)
+- focused on those who already know the basics of operating with R (and RStudio); loading data, data types, basic functions
 :::
 
 ## R basics recap - what do you know?
 
 **What does the symbol \$ do?**
 
+::: fragment
 \$ selects values of a particular column from the dataset
 
-dataset\$columnName
+`dataset$columnName`
+:::
 
+::: fragment
 **Which deliminator is used in R?**
 
 Decimal point; however, that does not mean that you cannot use datasets which use comma.
+:::
 
-Which function can we use to load datasets from .txt or .csv files into R?
+::: fragment
+**Which function can we use to load datasets from .txt or .csv files into R?**
 
 `read.table()`
 
 For txt: `read.delim()`
 
 For CSV: `read.csv()`
+:::
 
-What is a factor?
+::: fragment
+**What is a factor?**
+
+Variables with set of possible values; represents categorical data.
+
+```{r}
+head(iris)
+iris$Species
+levels(iris$Species)
+```
+:::
 
 ## Types of data
 
-why it is important to know the difference
+Why it is important to know the difference? **Because the type of your data will infuence what visualization can be used.** You can hardly portray a categorical data like number of individuals for each blood type category using a linechart.
 
-qualitaitve data diskrétní - nominal data - ordinal data
+### Categorial (qualitative) data
 
-quantitative data spojitá - interval data - pokracuje to jak je treba, -25 stupnu je porad hodnota, nema to neco jako jasnou nulu - nelze porovnavat - teplota v celsius nemuze byt napriklad dvakrat tak vetsi, protoze... dvakrat tak vetsi od ceho? - 40C neni 2x vetsi nez 20C, protoze nula neni zacatek od ktereho se to pocita - ratio - jasna nula; nelze mit zapornou vysku nebo treba prijem, taky nelze jit do minusu se stupni kelvina
+Data which has a certain quality; in other words, data which can be divided into categories.
 
-is it possible to change those types? yes fo example dividing height into categories
+- **nominal data**
+
+  - data that can be divided into categories, that cannot be ordered - cannot be compared and ranked
+    - blood type, eyecolour, type of cell staining
+
+- **ordinal data**
+
+  - data that can be divided into categories, but can be put into an order - one category can be put above the other
+    - newborn, toddler, child, teenager, adult, senior
+    - first, second, third
+
+### Numeric (quantitative) data
+
+Data which can be counted and measured
+
+- **interval data**
+
+  - data that can be described as values differing by a set interval
+
+    - the difference between 182 and 183 is exactly 1, same as 87 and 88 - in both cases the difference between those intervals is exactly the same (1 = 1)
+
+    - tldr; standard numeric values from negative infinity to úositive infinity
+
+  - degrees of Celsius, altitude above the sea level
+
+- **ratio**
+
+  - data that can be described as values differing by a set interval, with a defined zero value, which allows to create size comparison/ratio
+
+    - an example is weight; something cannot exactly be negative grams
+
+    - x weights 20 grams, y 40 grams, with the later being twice as heavy as x
+
+      - why canť the same be done with degrees of Celsius? What other unit of measurements would have to be used?
+
+    - length of bone, number of samples collected
+
+::: callout-note
+## Is it possible to change the data type?
+
+Yes, for example by changing the interval or ratio data into ordinal data; height in centimeters get changed into 50 cm difference categories.
+:::
 
 ## Loading the data
 
@@ -81,8 +140,12 @@ is it possible to change those types? yes fo example dividing height into catego
 #| include: false
 
 dataNewborns <- read.delim("newborns.txt")
-dataNewborns$edu.M <- factor(dataNewborns$edu.M, labels = c("ZS", "SS", "SSm", "VS"))
-dataNewborns$sex.C <- as.factor(dataNewborns$sex.C)
+sum(!complete.cases(dataNewborns))
+dataNewborns <- tidyr::drop_na(dataNewborns)
+dataNewborns$edu.M <- factor(dataNewborns$edu.M, labels = c("Grade school", "Vocational school", "High school", "University"))
+dataNewborns$sex.C <- factor(dataNewborns$sex.C,
+	levels = c("f", "m"), labels = c("Female", "Male")
+)
 ```
 
 During this workshop, we will be working with many types of datasets, most of which are saved in various packages. The first one that we will be however using is the dataset in the file [`newborns.txt`](https://luc-hoskova.github.io/R-individualni_kurzy/Charleston-visualization/newborns.txt).
@@ -97,42 +160,339 @@ Just loading the data is never enough; always check the data to make sure that *
 
 ------------------------------------------------------------------------
 
-what function will we use? how will we do it?
+## Base R vizualization
 
-what types are the different variables? what function to use changing to factors - if its categories which use numbers for names it will take it as numeric and for example barlots will go haywire
+While we will be using primarily `ggplot2` package for visualization, it is handy to know the basics of visualization using just the basic R functions, at least for the three most common plot types: barplot, histogram, and line chart.
 
-changing to factors
+### Barplot
 
-## Example of base R
+A barplot is used to display the relationship between a **numeric and a categorical variable**.
 
-načtení dat
+In this example, we are using the categorial data of different education levels of the mothers (`edu.M`) and the numeric value that is the count of the occurences for each category.
 
-# why you should use ggplot2 instead
+```{r}
+barplot(table(dataNewborns$edu.M),
+  xlab = "Mother's education", #x axis description
+  ylab = "Frequency", #y axis description
+  main = "Distribution of edu.M", #plot title
+  col = c("lightblue", "magenta", "yellow", "red")) #colors
+```
+
+------------------------------------------------------------------------
+
+### Histogram
+
+A histogram is used to study the **distribution of one or several variables**. Distribution can be only applied to numeric data!
+
+```{r}
+hist(dataNewborns$weight.C,
+     breaks = 11, #number of bins
+     labels = TRUE, #label the value of each bin
+     ylim = c(0, 500), #set y axis limits - how high the axis can go
+    )
+```
+
+------------------------------------------------------------------------
+
+### Line chart
+
+A line chart (or line graph) is a graph that displays **relationship between numeric vslues**, in the point of continuous line, ie. the stereotypical graph.
+
+Line chart is used mainly when the **x-axis has a natural order** and you want to show a trend or change.
+
+For this example we will be using inbuilt dataset `Nile`, containing time series of the annual flow of the Nile river. To understand it, first lets take a look at it.
+
+```{r}
+#\ echo: FALSE
+Nile
+```
+
+From this we can clearly see continuous nature of the data.
+
+```{r}
+plot(Nile,
+  type = "l", #show only line
+  col = "steelblue", #color of kine
+  lwd = 2, #line width
+  xlab = "Year",
+  ylab = "River flow",
+  main = "Annual Flow of the Nile River")
+```
+
+------------------------------------------------------------------------
+
+### Scatter plot
+
+Another visualization comparing two numerical values is scatterplot; unlike line chart, which compares when you want to show the relationship between **two numeric variables, usually of individual measurements/observations.**
+
+For this example we will use the inbuilt dataframe `iris`, which describes the petal width and length of various flowers. Lets take a look at it.
+
+```{r}
+head(iris)
+```
+
+We can see that the dataset contains multiple measurements, not just a continuous line.
+
+```{r}
+plot(
+  iris$Sepal.Length,
+  iris$Sepal.Width,
+  type = "p", #show only points
+  pch = 19, #type of the points (round and col filled)
+  col = "steelblue", #color of the points
+  xlab = "Sepal Length",
+  ylab = "Sepal Width",
+  main = "Sepal Length vs Sepal Width")
+```
+
+------------------------------------------------------------------------
+
+## base R vs `ggplot2`
+
+Now lets try something more complicated. How about a graph that would be showing us birth weight distribution by sex?
+
+```{r}
+histogram_breaks <- round(1 + 3.3 * log10(length(dataNewborns$weight.C)))
+
+histogram_colours <- c(Female = "#D1495B", Male = "#00798C")
+
+female_weights <- dataNewborns$weight.C[dataNewborns$sex.C == "Female"]
+male_weights <- dataNewborns$weight.C[dataNewborns$sex.C == "Male"]
+
+hist(female_weights,
+	breaks = histogram_breaks,
+	col = adjustcolor(histogram_colours["Female"], alpha.f = 0.50),
+	border = NA,
+	xlab = "Birth weight (g)",
+	ylab = "Frequency",
+	main = "Birth weight distribution by sex",
+	sub = "Base R histogram")
+
+hist(male_weights,
+	breaks = histogram_breaks, add = TRUE,
+	col = adjustcolor(histogram_colours["Male"], alpha.f = 0.50),
+	border = NA)
+
+abline(v = mean(dataNewborns$weight.C), col = "grey35", lty = 3, lwd = 2)
+
+legend("topright",
+	legend = c("Female", "Male", "Overall mean"),
+	fill = c(adjustcolor(histogram_colours, alpha.f = 0.50), NA),
+	border = c(histogram_colours, NA),
+	col = c(histogram_colours["Female"], histogram_colours["Male"], "grey35"),
+	lty = c(NA, NA, 3), lwd = c(1, 1, 2),
+	bty = "n", cex = 0.8)
+```
+
+As we can see, this one is much more complicated and lengthy. Is there any way that this could be simplified?
+
+```{r}
+library(ggplot2)
+ggplot(dataNewborns, aes(x = weight.C, fill = sex.C)) +
+  geom_histogram(bins = round(1 + 3.3 * log10(length(dataNewborns$weight.C))), position = "identity", alpha = 0.50) +
+  geom_vline(aes(xintercept = mean(weight.C),
+                 linetype = "Overall mean"), colour = "grey35", linewidth = 0.8) +
+  scale_fill_manual(values = c("#D1495B","#00798C")) +
+  scale_linetype_manual(values = c("Overall mean" = "dashed"),
+                        name = NULL) +
+  labs(
+    title = "Birth weight distribution by sex",
+    subtitle = "ggplot2 histogram",
+    x = "Birth weight (g)", y = "Frequency", fill = "Sex"
+  ) +
+  theme_minimal()
+```
+
+## Why you should use `ggplot2` instead of `base R`
+
+This is a personal opinion; base R on its own is already a powerful tool. The `ggplot2` package only builds on top of an already existing robust system.
+
+### Pros
+
+- in base R, each type of graph has its own function with what can be wildly varying arguments
+
+  - ggplot2 has in my opinion much **easier and faster to understand grammar**
+
+- allows to set up the needed data modifications inside the visualization code; no need to modify the data outside of it
+
+- the baseline results without any extra tweaking looks better than base R
+
+  - of course you can modify the visuals but we are lazy and want the least amount of work possible
+
+### Cons
+
+- **data needs to be a dataframe or a tibble**, the rest will need to be converted
+- for help with individual layers functions you will need to look into an online documentation, not the basic R help
+
+## `ggplot2` grammar: the basics
+
+- `ggplot()` function:
+
+  - argument `data`: what data do we want to visualize?
+
+  - argument `aes()`: How do we want to visualize those data? Which variables from our data do we want to use in the graph? What will be `x`, what will be `y`? Do we want to divide the variables by certain categories?
+
+- `geom()` function: Which type of graph do we want? Histogram? Barplot? Do we want them to have any special attributes? What about colours?
+
+------------------------------------------------------------------------
+
+The mentioned three functions/arguments are the basic grammar that always has to be used in the `ggplot`. **There are however many additional functions that can be used to create greatly customizable visualizations.**
+
+- all of those functions **have to be applied together** into one graph **using the symbol** **+**
+
+- there is **no limit to how many layers one can apply together**; it is actually possible to even have multiple types of visualization (geom layers) in one graph
+
+  - each new `geom()` layer can have its own `aes` mapping with different arguments'
+
+::: callout-important
+## It is possible to customize the functions themselves
+
+Before adding another layer to the `ggplot`, think; is it possible to instead reach the needed result using just the arguments inside each function?
+:::
+
+------------------------------------------------------------------------
 
 ## Barplot
 
-for categorical data or rather - numeric values of the categories categories on x the numeric values on y it is possible to do how much is of each category like with histogram aka count
-
-https://lucie-hoskova.quarto.pub/r_pro_analyzu_vedeckych_dat/letni_skola.html#/barplot
-
-## point
-
 ```{r}
-#| label: fig-airquality
-#| fig-cap: "Temperature and ozone level."
-#| warning: false
-
-library(ggplot2)
-
-ggplot(airquality, aes(Temp, Ozone)) + 
-  geom_point() + 
-  geom_smooth(method = "loess")
+library(ggplot2) #dont forget to always load the package!
+ggplot(data = dataNewborns,
+  aes(x = edu.M)) + #geom_bar automatically counts the values of x if y is not provided
+  geom_bar() #create barplot
 ```
 
-## 3D graphs
+**What if we however had the y?**
 
-library(rgl)
+```{r}
+eduFreq <- data.frame(edu.M = levels(dataNewborns$edu.M), frequency = as.vector(table(dataNewborns$edu.M)))
 
-x \<- rnorm(100) y \<- rnorm(100) z \<- rnorm(100)
+ggplot(data = eduFreq,
+       aes(x = edu.M, y = frequency)) + 
+  geom_bar(stat = "identity") #notice the reordering!
+```
 
-plot3d(x, y, z, col = "blue", pch = 20, size = 2, xlab = "X", ylab = "Y", zlab = "Z") #v prezentaci se nezobrazi, musi byt spusten v RStudiu
+Another option is using `geom_col().` In this case it will offer the same result as previous code, but unlike `geom_bar()` it is meant to be used when summary statistics are available.
+
+```{r}
+ggplot(data = eduFreq,
+       aes(x = edu.M, y = frequency)) + 
+  geom_col()
+```
+
+**Next section: code along to try out different `ggplot2` layers**
+
+------------------------------------------------------------------------
+
+#### Individual work
+
+```{r}
+#| echo: false
+countdown::countdown(minutes = 10,
+                     seconds = 0,
+                     start_immediately = FALSE,
+                     warn_when = 120,
+                     top = "0")
+```
+
+Create a barplot showing the average weight of newborns for mothers from each education level category. Try using colors, legend, labels and all the bells and whistles.
+
+If you will have problem figuring out how to create the dataframe of the average weight, there is one of the many possible solutions on the next slide.
+
+------------------------------------------------------------------------
+
+```{r}
+meanWeightEdu <- dataNewborns %>%
+  group_by(edu.M) %>%
+  summarise(meanWeight = round(mean(weight.C), 2))
+```
+
+------------------------------------------------------------------------
+
+## Histogram
+
+R will automatically assign into how many "bins" should be divided. However, there exists a dedicated formula, that will calculate the optimal amount of bins; the **Sturges's rule**.
+
+```{r}
+round(1 + 3.3 * log10(length(dataNewborns$weight.C))) #result is 11
+```
+
+The resulting number can be used in the corresponding argument.
+
+```{r}
+ggplot(dataNewborns) +
+  aes(x = weight.C) +
+  geom_histogram(bins = 11)
+```
+
+**Next section: code along to try out different `ggplot2` layers**
+
+------------------------------------------------------------------------
+
+#### Individual work
+
+```{r}
+#| echo: false
+countdown::countdown(minutes = 10,
+                     seconds = 0,
+                     start_immediately = FALSE,
+                     warn_when = 120,
+                     top = "0")
+```
+
+Create a histogram using the inbuilt dataset **diamonds**, showing the distribution of the price according to the different cuts. Divide the histogram into individual graph for each cut type. Each graph will have its own color. Don't forget legend.
+
+------------------------------------------------------------------------
+
+## Scatterplot
+
+For this visualization we will be using the inbuilt dataset \`iris\`.
+
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+  geom_point()
+```
+
+**Next section: code along to try out different `ggplot2` layers**
+
+------------------------------------------------------------------------
+
+#### Individual work
+
+```{r}
+#| echo: false
+countdown::countdown(minutes = 10,
+                     seconds = 0,
+                     start_immediately = FALSE,
+                     warn_when = 120,
+                     top = "0")
+```
+
+Create a scatterplot from the inbuilt dataset `women`. Change the color, size and shape of the points. Add fitted trend line of linear regression.
+
+## Boxplot
+
+Designed to visualize the **distribution of quantitative data in distinct categories**. It specifies the median, IQR, minimum, maximum, and values outside the confidence interval.
+
+```{r}
+ggplot(dataNewborns) +
+  aes(x = sex.C, #what category are we using
+      y = weight.C) + #what is the numeric value we are plotting
+  geom_boxplot()
+```
+
+**Next section: code along to try out different `ggplot2` layers**
+
+------------------------------------------------------------------------
+
+#### Individual work
+
+```{r}
+#| echo: false
+countdown::countdown(minutes = 10,
+                     seconds = 0,
+                     start_immediately = FALSE,
+                     warn_when = 120,
+                     top = "0")
+```
+
+Using the dataset `iris`, create a boxplot comparing **Sepal Length** across the three species. Use all the additional layers we learned.
