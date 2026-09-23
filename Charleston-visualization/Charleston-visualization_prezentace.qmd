@@ -657,3 +657,7 @@ All the colours and palettes you ahve ever needed.
 [R Graphics Cookbook](https://r-graphics.org/)
 
 Takes all the basics we have covered today and adds layers of addjustements. With examples and step by step code.
+
+[Wada Sanzo \| A Dictionary of Color Combinations](https://sanzo-wada.dmbk.io/)
+
+Get color combinations for any colour imaginable!
