@@ -1,5 +1,5 @@
 ---
-title: "R language - visualization"
+title: "Visualization using R language"
 subtitle: "Lucie Hošková"
 title-slide-attributes:
   data-background-color: rgb(233, 84, 32)
@@ -26,8 +26,7 @@ execute:
 - so what type of data am I actually working with and why do I need to know?
 - basic plot types
 - base R vs `ggplot2`
-- `ggplot2` layers shown on barplot, histogram and scatterplot
-- boxplot
+- `ggplot2` barplot, histogram, scatterplot and boxplot
 - heatmaps
 - maps
 :::
@@ -35,13 +34,13 @@ execute:
 ## Organization
 
 ::: incremental
-- four cca 45 minutes long blocks with breaks inbetween
+- four cca 50 minutes long blocks with breaks in-between
 
   - water and coffee available
 
 - combination of code along, presentation and individual work
 
-- focused on those who already know the basics of operating with R (and RStudio); loading data, data types, basic functions
+- focused on those who already know the basics of operating with R (and RStudio); loading data, data types and structures, basic functions
 :::
 
 ## R basics recap - what do you know?
@@ -49,30 +48,35 @@ execute:
 **What does the symbol \$ do?**
 
 ::: fragment
-\$ selects values of a particular column from the dataset
+\$ selects values of a particular column from the dataframe
 
-`dataset$columnName`
+`dataframe$columnName`
 :::
 
-::: fragment
+:::: fragment
 **Which deliminator is used in R?**
 
+::: fragment
 Decimal point; however, that does not mean that you cannot use datasets which use comma.
 :::
+::::
 
-::: fragment
+:::: fragment
 **Which function can we use to load datasets from .txt or .csv files into R?**
 
+::: fragment
 `read.table()`
 
 For txt: `read.delim()`
 
 For CSV: `read.csv()`
 :::
+::::
+
+:::: fragment
+**What are factors?**
 
 ::: fragment
-**What is a factor?**
-
 Variables with set of possible values; represents categorical data.
 
 ```{r}
@@ -81,12 +85,13 @@ iris$Species
 levels(iris$Species)
 ```
 :::
+::::
 
 ## Types of data
 
 Why it is important to know the difference? **Because the type of your data will infuence what visualization can be used.** You can hardly portray a categorical data like number of individuals for each blood type category using a linechart.
 
-### Categorial (qualitative) data
+### Categorial (qualitative) data {#categorial-qualitative-data}
 
 Data which has a certain quality; in other words, data which can be divided into categories.
 
@@ -97,9 +102,11 @@ Data which has a certain quality; in other words, data which can be divided into
 
 - **ordinal data**
 
-  - data that can be divided into categories, but can be put into an order - one category can be put above the other
+  - data that can be divided into categories and can be put into an order - one category can be put above the other
     - newborn, toddler, child, teenager, adult, senior
     - first, second, third
+
+------------------------------------------------------------------------
 
 ### Numeric (quantitative) data
 
@@ -138,7 +145,8 @@ Yes, for example by changing the interval or ratio data into ordinal data; heigh
 ```{r}
 #| echo: false
 #| include: false
-
+library(dplyr)
+library(ggplot2)
 dataNewborns <- read.delim("newborns.txt")
 sum(!complete.cases(dataNewborns))
 dataNewborns <- tidyr::drop_na(dataNewborns)
@@ -178,6 +186,14 @@ barplot(table(dataNewborns$edu.M),
   col = c("lightblue", "magenta", "yellow", "red")) #colors
 ```
 
+```{r}
+barplot(table(dataNewborns$edu.M),
+        xlab = "Mother's education", #x axis description
+        ylab = "Frequency", #y axis description
+        main = "Distribution of edu.M", #plot title
+        col = c("lightblue", "magenta", "yellow", "red")) #colors 
+```
+
 ------------------------------------------------------------------------
 
 ### Histogram
@@ -196,14 +212,13 @@ hist(dataNewborns$weight.C,
 
 ### Line chart
 
-A line chart (or line graph) is a graph that displays **relationship between numeric vslues**, in the point of continuous line, ie. the stereotypical graph.
+A line chart (or line graph) is a graph that displays **relationship between numeric values**, in the point of continuous line, ie. the stereotypical graph.
 
 Line chart is used mainly when the **x-axis has a natural order** and you want to show a trend or change.
 
 For this example we will be using inbuilt dataset `Nile`, containing time series of the annual flow of the Nile river. To understand it, first lets take a look at it.
 
 ```{r}
-#\ echo: FALSE
 Nile
 ```
 
@@ -217,6 +232,16 @@ plot(Nile,
   xlab = "Year",
   ylab = "River flow",
   main = "Annual Flow of the Nile River")
+```
+
+```{r}
+plot(Nile,
+     type = "l", #show only line
+     col = "steelblue", #color of kine
+     lwd = 2, #line width
+     xlab = "Year",
+     ylab = "River flow",
+     main = "Annual Flow of the Nile River")
 ```
 
 ------------------------------------------------------------------------
@@ -244,6 +269,22 @@ plot(
   ylab = "Sepal Width",
   main = "Sepal Length vs Sepal Width")
 ```
+
+::: callout-warning
+## Numeric data type does not automatically equal quantitative data!
+
+Do not forget that **even "numbers" can be qualitative data**.\
+In this case, the variable `prch.N` aka the number of pregnancies before the birth of the child isn´t a continuous line of numbers, but rather distinct categories; is it a first pregnancy, second, third, and so on?\
+For context look back to the part [Categorial (qualitative) data](#categorial-qualitative-data).
+
+```{r}
+plot(
+  dataNewborns$prch.N,
+  dataNewborns$weight.C,
+  type = "p",
+  xlim = c(0,10))
+```
+:::
 
 ------------------------------------------------------------------------
 
@@ -312,6 +353,7 @@ This is a personal opinion; base R on its own is already a powerful tool. The `g
 - in base R, each type of graph has its own function with what can be wildly varying arguments
 
   - ggplot2 has in my opinion much **easier and faster to understand grammar**
+  - most of the arguments from base R can be used in `ggplot2` anyway
 
 - allows to set up the needed data modifications inside the visualization code; no need to modify the data outside of it
 
@@ -322,7 +364,6 @@ This is a personal opinion; base R on its own is already a powerful tool. The `g
 ### Cons
 
 - **data needs to be a dataframe or a tibble**, the rest will need to be converted
-- for help with individual layers functions you will need to look into an online documentation, not the basic R help
 
 ## `ggplot2` grammar: the basics
 
@@ -332,7 +373,7 @@ This is a personal opinion; base R on its own is already a powerful tool. The `g
 
   - argument `aes()`: How do we want to visualize those data? Which variables from our data do we want to use in the graph? What will be `x`, what will be `y`? Do we want to divide the variables by certain categories?
 
-- `geom()` function: Which type of graph do we want? Histogram? Barplot? Do we want them to have any special attributes? What about colours?
+- `geom_*()` function: Which type of graph do we want? Histogram? Barplot? Do we want them to have any special attributes? What about colours?
 
 ------------------------------------------------------------------------
 
@@ -355,7 +396,8 @@ Before adding another layer to the `ggplot`, think; is it possible to instead re
 ## Barplot
 
 ```{r}
-library(ggplot2) #dont forget to always load the package!
+#when starting dont forget to always load the package!
+library(ggplot2)
 ggplot(data = dataNewborns,
   aes(x = edu.M)) + #geom_bar automatically counts the values of x if y is not provided
   geom_bar() #create barplot
@@ -364,11 +406,13 @@ ggplot(data = dataNewborns,
 **What if we however had the y?**
 
 ```{r}
-eduFreq <- data.frame(edu.M = levels(dataNewborns$edu.M), frequency = as.vector(table(dataNewborns$edu.M)))
+eduFreq <- data.frame(edu.M = levels(dataNewborns$edu.M),
+                      frequency = as.vector(table(dataNewborns$edu.M))); eduFreq
 
 ggplot(data = eduFreq,
        aes(x = edu.M, y = frequency)) + 
-  geom_bar(stat = "identity") #notice the reordering!
+  geom_bar(stat = "identity") #we want to use specific values not count
+#notice the reordering!
 ```
 
 Another option is using `geom_col().` In this case it will offer the same result as previous code, but unlike `geom_bar()` it is meant to be used when summary statistics are available.
@@ -410,13 +454,19 @@ meanWeightEdu <- dataNewborns %>%
 
 ## Histogram
 
-R will automatically assign into how many "bins" should be divided. However, there exists a dedicated formula, that will calculate the optimal amount of bins; the **Sturges's rule**.
+R will automatically assign into how many "bins" should the data be divided. However, there exists a dedicated formula, that will calculate the optimal amount of bins; the **Sturges's rule**.
 
 ```{r}
-round(1 + 3.3 * log10(length(dataNewborns$weight.C))) #result is 11
+round(1 + 3.3 * log10(length(dataNewborns$weight.C)))
 ```
 
 The resulting number can be used in the corresponding argument.
+
+```{r}
+ggplot(dataNewborns) +
+  aes(x = weight.C) +
+  geom_histogram(bins = 11)
+```
 
 ```{r}
 ggplot(dataNewborns) +
@@ -445,10 +495,10 @@ Create a histogram using the inbuilt dataset **diamonds**, showing the distribut
 
 ## Scatterplot
 
-For this visualization we will be using the inbuilt dataset \`iris\`.
+For this visualization we will be using the inbuilt dataset `iris`.
 
 ```{r}
-ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + 
   geom_point()
 ```
 
@@ -495,4 +545,129 @@ countdown::countdown(minutes = 10,
                      top = "0")
 ```
 
-Using the dataset `iris`, create a boxplot comparing **Sepal Length** across the three species. Use all the additional layers we learned.
+Using the dataset `iris`, create a boxplot comparing **Sepal Length** across the three species. Use all the additional layers we learned. Try to write the arguments instead of copying them.
+
+## Heatmaps
+
+Heatmap allows to represent the magnitude of values in a dataset using colours.
+
+Because of that, the only value that can go into the heatmap is a **matrix;** object made out of purely numerical values-
+
+To see an example of how this works, lets take a look at a dataset `eurodist`, which stores information about the distances between various european cities.
+
+```{r}
+dataEU <- as.matrix(eurodist)
+heatmap(x = dataEU, #which data we want to load
+        col = rainbow(length(eurodist)), #generate as many colors as values in eurodist
+        main = "Distances between EU cities")
+```
+
+::: callout-tip
+## By default, heatmap() performs hierarchical clustering.
+
+That means R attempts to arrange the rows and columns so that similar observations are placed near one another. You can see this not only in the color shift, but also by the dendrogram that shows the degrees of closeness between each cities.
+:::
+
+## Spatial data
+
+There are **many various different ways how spatial data could be portrayed** using R; from chloropleth, hexbin maps, to interactive maps using the package `leaflet`.\
+However, today we are going to focus on the most basic spatial data visualization; placing spots with certain longitude and latitude on a map. This is so you can learn the basics of working with so called **shapefiles (sf)**.
+
+```{r}
+#to work with spatial data certain packages are needed
+library(sf)
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+```
+
+Latitude and longitude of certain points can be easily written as a dataframe.
+
+```{r}
+cities <- data.frame(
+  city = c(
+    "London",
+    "Paris",
+    "Berlin",
+    "Rome",
+    "Prague"),
+  longitude = c(
+    -0.1276,
+    2.3522,
+    13.4050,
+    12.4964,
+    14.4378),
+  latitude = c(
+    51.5074,
+    48.8566,
+    52.5200,
+    41.9028,
+    50.0755)); cities
+```
+
+Now we have the coordinates of the points we would want to place. But where? First **we have to create a map, or rather an object with the informations about the shape of the map**.
+
+------------------------------------------------------------------------
+
+```{r}
+world <- ne_countries( #geographic data for all countries
+  scale = "medium", #how detailed should the map be (try small and large too :])
+  returnclass = "sf") #return sf object
+
+class(world) #what sort of object world is?
+```
+
+The next step is converting our data frame with latitude/longitude information into a data structure, that can be sent into the world map shape file.
+
+```{r}
+cities_sf <- st_as_sf( #convert different object to an sf class object
+  x = cities, #object to be converted
+  coords = c("longitude", "latitude"), #which columns contain the coordinates
+  crs = 4326) #coordinate system WGS 84)
+```
+
+And now we can complete everything together using the `ggplot2` package.
+
+```{r}
+ggplot() + #create a plot
+  geom_sf(data = world) + #layer sf data of the map
+  geom_sf(
+    data = cities_sf, #layer sf data of the points
+    color = "red",
+    size = 3) +
+  geom_sf_text( #add descriptions
+    data = cities_sf,
+    aes(label = city))
+```
+
+Like this, the map is too big for us to see the saved cities properly. Using another `ggplot2` layer `cood_sf`, we can "zoom in".
+
+```{r}
+ggplot() +
+  geom_sf(data = world) +
+  geom_sf(
+    data = cities_sf,
+    color = "red",
+    size = 3) +
+  geom_sf_text(
+    data = cities_sf,
+    aes(label = city),
+    nudge_y = 1) + #move the description a little up
+  coord_sf( #selct only part of the map
+    xlim = c(-10, 30),
+    ylim = c(35, 60))
+```
+
+## Where to next?
+
+[The R Graph Gallery](https://r-graph-gallery.com/)
+
+If you need informations and example of how to create nearly any plot, they have it.
+
+[R Color Palettes: The Complete Reference](https://www.datanovia.com/blog/r-color-palettes)
+
+All the colours and palettes you ahve ever needed.
+
+[R Graphics Cookbook](https://r-graphics.org/)
+
+Takes all the basics we have covered today and adds layers of addjustements. With examples and step by step code.

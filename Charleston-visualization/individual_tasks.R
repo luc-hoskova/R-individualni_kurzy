@@ -1,7 +1,7 @@
 #INDIVIDUAL BARPLOT
 meanWeightEdu <- dataNewborns %>%
   group_by(edu.M) %>%
-  summarise(meanWeight = round(mean(weight.C), 2))
+  summarise(meanWeight = round(mean(weight.C), 2)); meanWeightEdu
 
 ggplot(meanWeightEdu,
        aes(x = edu.M, y = meanWeight)) +
@@ -50,3 +50,26 @@ labs(
   x = "Height",
   y = "Weight") +
 theme_minimal()
+
+#INDIVIDUAL BOXPLOT
+ggplot(iris) +
+  aes(
+    x = Species,
+    y = Sepal.Length,
+    fill = Species) +
+  geom_boxplot(outlier.size = 2,
+               outlier.shape = 18,
+               outlier.color = "magenta",
+               notch = TRUE) +
+  geom_jitter(
+    width = 0.15,
+    color = "darkblue",
+    alpha = 0.5) +
+  labs(
+    title = "Sepal Length by Iris Species",
+    x = "Species",
+    y = "Sepal Length (cm)"
+  ) +
+  theme_minimal()
+
+  

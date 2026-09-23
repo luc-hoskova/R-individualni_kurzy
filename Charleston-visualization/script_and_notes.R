@@ -1,9 +1,6 @@
 library(ggplot2)
 library(dplyr)
 
-##############################################################################################
-#BARPLOT
-##############################################################################################
 #LOADING DATA NEWBORN.TXT
 dataNewborns <- read.delim("newborns.txt")
 sum(!complete.cases(dataNewborns)) #does it have NAs
@@ -13,7 +10,9 @@ str(dataNewborns) #checking data
 dataNewborns$edu.M <- factor(dataNewborns$edu.M, labels = c("Grade school", "Vocational school", "High school", "University"))
 dataNewborns$sex.C <- factor(dataNewborns$sex.C, labels = c("Female", "Male"))
 str(dataNewborns)
-
+##############################################################################################
+#BARPLOT
+##############################################################################################
 #CREATING BARPLOT
 ggplot(data = dataNewborns,
   aes(x = edu.M)) + 
@@ -223,3 +222,58 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width,
        color = "Species",
        size = "Petal Width") +
   theme_minimal()
+
+##############################################################################################
+#BOXPLOT
+#############################################################################################
+#CREATING BOXPLOT
+ggplot(dataNewborns) +
+  aes(x = sex.C,
+      y = weight.C) +
+  geom_boxplot()
+
+#DIVIDING BY CATEGORIES, ADDING NOTCH AND CHANGING OUTLIERS
+ggplot(dataNewborns) +
+  aes(x = sex.C,
+      y = weight.C,
+      fill = sex.C) + # divide by categories
+  geom_boxplot(outlier.size = 2.5, #change size of outliers
+               outlier.shape = 21, #change the shape of outliers
+               notch = TRUE) + #add notch
+  labs(title = "Birth Weight by Sex", x = "Sex", y = "Birth Weight (g)",
+       fill = "Sex") +
+  theme_minimal()
+
+#MAP VALUES ON BOXPLOT
+ggplot(dataNewborns) +
+  aes(x = sex.C,
+      y = weight.C,
+      fill = sex.C) +
+  geom_boxplot(outlier.size = 2.5,
+               outlier.shape = 21,
+               notch = TRUE) +
+  geom_jitter( #add values
+    position = position_jitter(0.2), #how far away from middle
+    colour = "darkgreen",
+    alpha = 0.2) + #how opaque
+  labs(title = "Birth Weight by Sex", x = "Sex", y = "Birth Weight (g)",
+       fill = "Sex") +
+  theme_minimal()
+
+##############################################################################################
+#HEATMAP
+#############################################################################################
+#CREATING HEATMAPS WITH THE WESANDERSON PALETTES
+install.packages("wesanderson")
+library(wesanderson)
+
+names(wes_palettes) #what are the names of the available palettes
+
+wesPalette <- wes_palette(
+  "GrandBudapest2",
+  n = length(eurodist),
+  type = "continuous") #we want more colours than offered so the palette has to generate inbetweens
+
+heatmap(x = dataEU,
+        col = wesPalette,
+        main = "Distances between EU cities")
