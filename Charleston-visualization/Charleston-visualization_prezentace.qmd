@@ -9,6 +9,14 @@ format:
     theme: default
     scrollable: true
     footer: "[Lucie Hošková](https://orcid.org/0009-0001-9695-2342)"
+include-in-header:
+  - text: |
+      <style>
+      .reveal .slide > img.r-stretch {
+        width: 100% !important;
+        height: auto !important;
+      }
+      </style>
 engine: knitr
 filters:
   - webr
@@ -186,14 +194,6 @@ barplot(table(dataNewborns$edu.M),
   col = c("lightblue", "magenta", "yellow", "red")) #colors
 ```
 
-```{r}
-barplot(table(dataNewborns$edu.M),
-        xlab = "Mother's education", #x axis description
-        ylab = "Frequency", #y axis description
-        main = "Distribution of edu.M", #plot title
-        col = c("lightblue", "magenta", "yellow", "red")) #colors 
-```
-
 ------------------------------------------------------------------------
 
 ### Histogram
@@ -207,6 +207,8 @@ hist(dataNewborns$weight.C,
      ylim = c(0, 500), #set y axis limits - how high the axis can go
     )
 ```
+
+l
 
 ------------------------------------------------------------------------
 
@@ -232,16 +234,6 @@ plot(Nile,
   xlab = "Year",
   ylab = "River flow",
   main = "Annual Flow of the Nile River")
-```
-
-```{r}
-plot(Nile,
-     type = "l", #show only line
-     col = "steelblue", #color of kine
-     lwd = 2, #line width
-     xlab = "Year",
-     ylab = "River flow",
-     main = "Annual Flow of the Nile River")
 ```
 
 ------------------------------------------------------------------------
@@ -468,12 +460,6 @@ ggplot(dataNewborns) +
   geom_histogram(bins = 11)
 ```
 
-```{r}
-ggplot(dataNewborns) +
-  aes(x = weight.C) +
-  geom_histogram(bins = 11)
-```
-
 **Next section: code along to try out different `ggplot2` layers**
 
 ------------------------------------------------------------------------
@@ -653,9 +639,9 @@ ggplot() +
     data = cities_sf,
     aes(label = city),
     nudge_y = 1) + #move the description a little up
-  coord_sf( #selct only part of the map
-    xlim = c(-10, 30),
-    ylim = c(35, 60))
+  coord_sf( #select only part of the map
+    xlim = c(-10, 30), #coordinates on t x axis
+    ylim = c(35, 60)) #coordinates on the y axis
 ```
 
 ## Where to next?
